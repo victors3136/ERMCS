@@ -1,0 +1,4 @@
+rq,execution_features,precision,recall,mcc,fpr,tn,fp,fn,tp,n_flaky_failures,n_faulttriggering_failures,source
+RQ1,No,0.992,0.989,0.20,0.762,552,1768,2435,215068,217503,2320,"Table 4, Sec 6.1"
+RQ2,No,0.997,0.913,0.25,0.203,,,,,,,"Table 5 row 'No', Sec 6.2"
+RQ3,Yes,0.995,0.987,0.42,0.423,,,,,,,"Table 5 row 'Yes', Sec 6.3"

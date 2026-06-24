@@ -1,0 +1,120 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+
+\begin{document}
+
+\title[Replication Study of Flaky Test Failure Classification]{Replication Study of "The Importance of Discerning Flaky from Fault-triggering Test Failures in Chromium CI"}
+
+\author*{\fnm{Engel} \sur{Ines Vanessa}}
+\author*{\fnm{Nicolaescu} \sur{Andrei}}
+\author*{\fnm{Selegean} \sur{Victor}}
+
+\affil*{\orgdiv{Babes Bolyai University}, \orgname{Cluj-Napoca}, \orgaddress{\country{Romania}}}
+
+\abstract{
+This replication study reproduces the ASE 2024 paper by Haben et al. on flaky test failure classification in Chromium CI. The study evaluates whether vocabulary-based models can distinguish flaky failures from fault-triggering failures in continuous integration systems.
+
+We reimplemented three experimental setups: (RQ1) test-level vocabulary model, (RQ2) failure-level vocabulary model, and (RQ3) failure-level model enhanced with execution features. Our results confirm that vocabulary-only models achieve high precision but low robustness in practical settings. Execution features significantly improve recall and F1-score, but introduce a strong increase in false positive rate, reducing overall model reliability as measured by MCC.
+}
+
+\keywords{flaky tests, software testing, machine learning, CI/CD, replication study}
+
+\maketitle
+
+% =========================
+\section{Introduction}
+
+Flaky tests represent a major challenge in continuous integration systems due to nondeterministic behavior that leads to unreliable test outcomes. Haben et al. (ASE 2024) investigate whether vocabulary-based classifiers can reliably distinguish flaky failures from fault-triggering failures in Chromium CI.
+
+Although prior work reports high precision and recall, the authors show that such models may be unsuitable for deployment, as they incorrectly classify a large number of real faults as flaky failures.
+
+This replication study reimplements their experimental setup and evaluates whether the reported findings generalize under a modern machine learning environment.
+
+% =========================
+\section{Experimental Setup}
+
+We follow the original methodology using:
+
+\begin{itemize}
+\item Chronological 80/20 train-test split
+\item Vocabulary-based bag-of-words representation (top features selected via grid search)
+\item Balanced Random Forest classifier
+\item Execution features for RQ3: flake rate and run duration
+\end{itemize}
+
+The dataset consists of Chromium CI test executions with labeled flaky and fault-triggering failures.
+
+% =========================
+\section{Results}
+
+\begin{table}[h]
+\centering
+\caption{Replication results across research questions}
+\begin{tabular}{lccccc}
+\toprule
+RQ & Precision & Recall & F1 & MCC & FPR \\
+\midrule
+RQ1 & 0.9945 & 0.7432 & 0.8507 & 0.0890 & 0.3679 \\
+RQ2 & 0.9972 & 0.7034 & 0.8249 & 0.1187 & 0.1803 \\
+RQ3 & 0.9939 & 0.9562 & 0.9747 & 0.2093 & 0.5246 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================
+\section{RQ1: Vocabulary model trained on tests}
+
+RQ1 achieves extremely high precision (0.9945), indicating that predicted flaky failures are almost always correct. However, recall is lower (0.7432), indicating that a substantial portion of flaky failures is missed.
+
+Despite strong precision, MCC is very low (0.0890), suggesting poor overall classification quality when considering both classes.
+
+The false positive rate (0.3679) shows that a large fraction of fault-triggering failures are incorrectly labeled as flaky, limiting practical applicability in CI environments.
+
+% =========================
+\section{RQ2: Vocabulary model trained on failures}
+
+RQ2 slightly improves MCC (0.1187) and reduces the false positive rate (0.1803). This indicates that training at the failure level improves robustness compared to test-level modeling.
+
+However, vocabulary-only features remain insufficient to capture the complexity of failure behavior in CI systems.
+
+% =========================
+\section{RQ3: Vocabulary model with execution features}
+
+RQ3 significantly improves recall (0.9562) and F1-score (0.9747), showing that execution-based features provide valuable predictive signal.
+
+However, this improvement comes at a significant cost: the false positive rate increases to 0.5246. This indicates that the model becomes overly sensitive, labeling many fault-triggering failures as flaky.
+
+Although F1-score is high, MCC remains low (0.2093), highlighting that overall classification quality is still limited.
+
+\textbf{Explanation:}
+
+Execution features such as flake rate and run duration strongly correlate with flaky behavior, causing the classifier to overgeneralize the concept of flakiness. This increases true positive detection but significantly reduces specificity, leading to a high number of false positives.
+
+% =========================
+\section{Discussion}
+
+The replication confirms the central findings of Haben et al. (2024): vocabulary-based models alone are insufficient for reliable flaky failure classification in CI environments.
+
+Across all experiments, precision remains consistently high, but MCC reveals the true limitations of the models. RQ3 demonstrates a clear trade-off: improving recall through execution features increases false positives and reduces balanced performance.
+
+Differences from the original paper may be attributed to:
+\begin{itemize}
+\item Stochasticity in Balanced Random Forest training
+\item Differences in grid search configuration
+\item Dataset sampling differences (50,000 failure subset used)
+\item Ambiguity in labeling and dataset preprocessing choices
+\end{itemize}
+
+Despite these differences, all qualitative trends are successfully reproduced.
+
+% =========================
+\section{Conclusion}
+
+This replication study successfully reproduces the key findings of Haben et al. (ASE 2024). While exact metric values differ slightly, the same trends are observed: vocabulary-only models are insufficient, and execution features improve detection performance but introduce a strong trade-off between recall and false positive rate.
+
+The results emphasize that MCC is a more reliable metric than F1-score in this context, as it captures the imbalance introduced by excessive false positives.
+
+\end{document}

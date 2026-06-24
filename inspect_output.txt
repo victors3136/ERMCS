@@ -1,0 +1,107 @@
+
+Loading dataset.35past.Linux10k.json (4918.1 MB) ...
+
+======================================================================
+dataLinux
+======================================================================
+shape: (1851002, 22)
+columns: ['buildId', 'command', 'commandLength', 'crashlog', 'crashlogLength', 'failureFlipRate', 'failureRate', 'flakeRate', 'flakyFlipRate', 'label', 'runDuration', 'runStatus', 'runTagStatus', 'stackTrace', 'stackTraceLength', 'stderr', 'stderrLength', 'testId', 'testSource', 'testSourceLength', 'testStatus', 'testSuite']
+
+dtypes:
+buildId               int64
+command                 str
+commandLength         int64
+crashlog                str
+crashlogLength        int64
+failureFlipRate     float64
+failureRate         float64
+flakeRate           float64
+flakyFlipRate       float64
+label                 int64
+runDuration         float64
+runStatus               str
+runTagStatus            str
+stackTrace              str
+stackTraceLength      int64
+stderr                  str
+stderrLength          int64
+testId                  str
+testSource              str
+testSourceLength      int64
+testStatus              str
+testSuite               str
+dtype: object
+
+label value counts:
+label
+0    1833831
+1      17171
+Name: count, dtype: int64
+
+buildId range: 113075 to 123038
+unique buildIds: 9926
+
+testSource char length: min/median/max = 0 1249.0 397665
+rows with empty testSource: 356883 (19.3%)
+
+first row sample:
+{'buildId': 113075, 'command': '', 'commandLength': 0, 'crashlog': '', 'crashlogLength': 0, 'failureFlipRate': 0.0, 'failureRate': 0.0, 'flakeRate': 0.0, 'flakyFlipRate': 0.0, 'label': 1, 'runDuration': 0.784, 'runStatus': 'FAIL', 'runTagStatus': 'FAILURE', 'stackTrace': '', 'stackTraceLength': 0, 'stderr': '', 'stderrLength': 0, 'testId': 'content_browsertests_ninja://content/test:content_browsertests/AttributionSrcBrowserTest.AttributionSrcImg_InvalidAggregatableSourcesDropped', 'testSource': '', 'testSourceLength': 0, 'testStatus': 'UNEXPECTED', 'testSuite': 'content_browsertests'}
+
+Loading dataset.pass.json (849.2 MB) ...
+
+======================================================================
+dataPass
+======================================================================
+shape: (339106, 18)
+columns: ['buildId', 'command', 'commandLength', 'crashlog', 'crashlogLength', 'label', 'runDuration', 'runStatus', 'runTagStatus', 'stackTrace', 'stackTraceLength', 'stderr', 'stderrLength', 'testId', 'testSource', 'testSourceLength', 'testStatus', 'testSuite']
+
+dtypes:
+buildId               int64
+command                 str
+commandLength         int64
+crashlog                str
+crashlogLength        int64
+label                 int64
+runDuration         float64
+runStatus               str
+runTagStatus            str
+stackTrace              str
+stackTraceLength      int64
+stderr                  str
+stderrLength          int64
+testId                  str
+testSource              str
+testSourceLength      int64
+testStatus              str
+testSuite               str
+dtype: object
+
+label value counts:
+label
+2    338816
+0       284
+1         6
+Name: count, dtype: int64
+
+buildId range: 121238 to 123038
+unique buildIds: 2
+
+testSource char length: min/median/max = 0 1168.0 397665
+rows with empty testSource: 8117 (2.4%)
+
+first row sample:
+{'buildId': 121238, 'command': '', 'commandLength': 0, 'crashlog': '', 'crashlogLength': 0, 'label': 1, 'runDuration': 32.804, 'runStatus': 'CRASH', 'runTagStatus': 'CRASH', 'stackTrace': '', 'stackTraceLength': 0, 'stderr': '', 'stderrLength': 0, 'testId': 'browser_tests_ninja://chrome/test:browser_tests/IsAnimatedLCPTest.LargestContentfulPaint_IsVideo', 'testSource': '', 'testSourceLength': 0, 'testStatus': 'UNEXPECTED', 'testSuite': 'browser_tests'}
+
+======================================================================
+nft121
+======================================================================
+type: <class 'list'>
+length: 407745
+first 5 entries: ['components_unittests_ninja://components:components_unittests/ClientTagBasedModelTypeProcessorTest.ShouldPropagateFailedCommitItemsToBridgeWhenCommitCompleted', 'angle_unittests_ninja://third_party/angle/src/tests:angle_unittests/CorrectVariantsWithExtensionAndPragma/EXTYUVTargetTest.CompileSucceedsWithExtensionAndPragma/1', 'views_unittests_ninja://ui/views:views_unittests/LabelTest.DefaultDirectionalityIsFromText', 'not_site_per_process_blink_wpt_tests_ninja://:blink_wpt_tests/external/wpt/css/css-writing-modes/sizing-orthogonal-percentage-margin-008.html', 'telemetry_unittests_ninja://chrome/test:telemetry_unittests/telemetry.timeline.chrome_trace_config_unittest.ChromeTraceConfigTests.testDefault']
+
+======================================================================
+nft123
+======================================================================
+type: <class 'list'>
+length: 409855
+first 5 entries: ['content_unittests_ninja://content/test:content_unittests/PrivateAggregationBudgeterTest.ClearAllDataNullTimes', 'blink_platform_unittests_ninja://third_party/blink/renderer/platform:blink_platform_unittests/SegmentStreamTest.RewindShouldResetPosition', 'not_site_per_process_blink_wpt_tests_ninja://:blink_wpt_tests/external/wpt/css/css-text/white-space/tab-stop-threshold-005.html', 'blink_wpt_tests_ninja://:blink_wpt_tests/external/wpt/referrer-policy/gen/iframe.meta/strict-origin-when-cross-origin/sharedworker-classic.http.html', 'not_site_per_process_blink_wpt_tests_ninja://:blink_wpt_tests/virtual/third-party-storage-partitioning/external/wpt/IndexedDB/writer-starvation.htm']
