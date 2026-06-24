@@ -1,6 +1,6 @@
 # Replication Study — Setup & Instructions
 
-## 1. Paper selected (Task 1)
+## 1. Paper selected
 
 **Haben, G., Habchi, S., Papadakis, M., Cordy, M., Le Traon, Y. (2024).**
 *"The Importance of Discerning Flaky from Fault-triggering Test Failures:
@@ -50,7 +50,7 @@ is still "not actionable" for production use.
 
 ```bash
 python3 -m venv ./.venv
-source ./.venv/bin/activate        # Windows: .\.venv\Scripts\activate
+source ./.venv/bin/activate        # On Windows: .\.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -63,7 +63,7 @@ original notebook verbatim. This is itself worth a sentence in your report's
 "Setup" section — environment rot is one of the most common real-world
 threats to replicability, and the ACM badging guide explicitly anticipates it).
 
-## 3. Getting the data (the one manual step)
+## 3. Getting the data
 
 The four data files are hosted on **figshare**:
 
@@ -127,16 +127,18 @@ real data** (also flagged inline in `reproduce.py`'s docstring):
 
 ```
 project-directory/
-├── README.md                    <- this file
+├── README.md                     <- this file
 ├── requirements.txt
 ├── inspect_data.py               <- run first, on real data
 ├── reproduce.py                  <- main RQ1/RQ2/RQ3 pipeline
 ├── original_paper_results.csv    <- ground-truth numbers from the paper (Tables 4 & 5)
 ├── REPORT_TEMPLATE.md            <- skeleton for Task 2a/2b/2c writeup, with the
 │                                     original numbers already filled in
-├── data/                          <- put the 4 downloaded JSON files here
-├── results/                       <- reproduce.py writes its CSV output here
-└── figures/                       <- confusion matrix PNGs land here
+├── independent_replicate.py      <- independent replication script
+├── run_extensions.py             <- independent replication script with modifications
+├── data/                         <- put the 4 downloaded JSON files here
+├── results/                      <- reproduce.py writes its CSV output here
+└── figures/                      <- confusion matrix PNGs land here
 ```
 ## 7. Experimental Redesign & Independent Architecture (Task 5)
 
@@ -176,7 +178,7 @@ splitting loss evaluation dynamically applies an inverse balance multiplier $W$ 
 scale gradients on the minority class instances:
 $$W_1 = \frac{N_{\text{majority}}}{N_{\text{minority}}}$$
 
-## 8. Custom Independent Source Code Development (Task 6)
+## 8. Custom Independent Source Code Development
 
 A completely clean-room script implementing the alternative architecture has been fully
 written and deployed inside the root execution directory.
@@ -187,7 +189,33 @@ written and deployed inside the root execution directory.
 python independent_replicate.py
 ```
 
-## 9. Execute Independent Replication and Extensions (Task 7)
+### Example Output
+```text
+================================================================================
+RUNNING HIST-GRADIENT BOOSTING PIPELINE
+================================================================================
+ -> Clean Train Matrix Size: 428017 rows
+ -> Clean Evaluation Deck Size: 30999 rows
+
+Fitting Class-Weighted Gradient Boosting Framework...
+Executing Inference across Evaluation Holdout Deck...
+
+----------------------------------------
+RESULTS SUMMARY
+----------------------------------------
+  Pipeline_Type: Clean-Room GradientBoosting (TF-IDF)
+  Precision: 0.9902
+  Recall: 0.9872
+  MCC: 0.0143
+  FPR (Missed Faults Rate): 0.9709
+  TN: 9
+  FP: 300
+  FN: 393
+  TP: 30297
+
+```
+
+## 9. Execute Independent Replication and Extensions
 
 An automated exploration framework was built to evaluate how the clean-room
 gradient-boosting pipeline holds up under altered algorithmic constraints.
@@ -207,6 +235,7 @@ Shifting the loss penalty heavier toward the minority class forces the gradient
 booster to prioritize minimizing False Positives (Real Bugs flagged as flaky).
 
 ### Extension Execution Instructions
+
 ```bash
 # Execute the parameter sweep across both replication and extension test scenarios
 python run_extensions.py

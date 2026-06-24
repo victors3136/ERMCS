@@ -1,10 +1,7 @@
 """
 independent_replicate.py
 ========================
-Clean-room independent replication script for Task 6.
-Implements the alternative architecture designed in Task 5.
-
-Key Design Divergences from Authors' Pipeline:
+Key Design Divergences from original Pipeline:
 1. Text Engine: Character N-Grams (range 3-5) TF-IDF instead of simple Bag-of-Words CountVectorizer.
 2. Learning Engine: Histogram-Based Gradient Boosting with native cost-sensitive class balancing.
 3. No synthetic generation (SMOTE skipped) to protect text feature space sparsity.
@@ -58,7 +55,6 @@ def split(data, train_pct=TRAIN_SPLIT):
 def clean(data):
     return data[data["testSource"].astype(str).str.strip() != ""].copy()
 
-
 def rq3(data_linux, data_pass, nft121, nft123):
     print("\n" + "=" * 80)
     print("RUNNING HIST-GRADIENT BOOSTING PIPELINE")
@@ -77,14 +73,14 @@ def rq3(data_linux, data_pass, nft121, nft123):
     pass_train = pd.concat([pass121, pass123])
 
     raw_train = pd.concat([
-        flaky_train.assign(target=1),
-        fault_train.assign(target=0),
+        flaky_train.assign(target=0),
+        fault_train.assign(target=1),
         pass_train.assign(target=0)
     ], ignore_index=True)
 
     train_df = clean(raw_train)
     test_df = clean(test_linux[test_linux["label"].isin([0, 1])])
-    test_df["target"] = (test_df["label"] == 0).astype(int)
+    test_df["target"] = (test_df["label"] == 1).astype(int)
 
     print(f" -> Clean Train Matrix Size: {train_df.shape[0]} rows")
     print(f" -> Clean Evaluation Deck Size: {test_df.shape[0]} rows")
@@ -119,15 +115,19 @@ def rq3(data_linux, data_pass, nft121, nft123):
     precision = precision_score(y_true, predictions, zero_division=0)
     recall = recall_score(y_true, predictions, zero_division=0)
     mcc = matthews_corrcoef(y_true, predictions)
-    fpr = fp / (fp + tn) if (fp + tn) > 0 else 0.0
+
+    missed_fault_rate = fn / (fn + tp) if (fn + tp) > 0 else 0.0
 
     metrics = {
         "Pipeline_Type": "Clean-Room GradientBoosting (TF-IDF)",
-        "Precision": f"{precision:.4f}",
-        "Recall": f"{recall:.4f}",
+        "Fault_Precision": f"{precision:.4f}",
+        "Fault_Recall": f"{recall:.4f}",
         "MCC": f"{mcc:.4f}",
-        "FPR (Missed Faults Rate)": f"{fpr:.4f}",
-        "TN": int(tn), "FP": int(fp), "FN": int(fn), "TP": int(tp)
+        "Missed_Fault_Rate (FPR-inverted)": f"{missed_fault_rate:.4f}",
+        "TN (True Flaky)": int(tn),
+        "FP (Flaky Mislabeled as Bug)": int(fp),
+        "FN (Bug Mislabeled as Flaky)": int(fn),
+        "TP (True Bug caught)": int(tp)
     }
 
     results_df = pd.DataFrame([metrics])
