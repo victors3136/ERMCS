@@ -1,0 +1,2 @@
+Pipeline_Type,Fault_Precision,Fault_Recall,MCC,Missed_Fault_Rate (FPR-inverted),TN (True Flaky),FP (Flaky Mislabeled as Bug),FN (Bug Mislabeled as Flaky),TP (True Bug caught)
+Clean-Room GradientBoosting (TF-IDF),0.0830,0.5502,0.1956,0.4498,28812,1878,139,170

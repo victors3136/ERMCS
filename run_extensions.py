@@ -3,7 +3,7 @@ run_extensions.py
 =================
 Runs independent replication benchmarks alongside modified algorithmic
 constraints to observe the sensitivity of the Matthew's Correlation Coefficient (MCC)
-and False Positive Rate (FPR).
+and Missed Fault Rate.
 """
 
 import itertools
@@ -34,8 +34,8 @@ def run(data_tuple, max_iter, balance_factor, scenario_name):
     test_linux = data_linux[data_linux["buildId"].isin(test_builds)].sample(n=30_000, random_state=42)
 
     train_df = clean(pd.concat([
-        train_linux[train_linux["label"] == 0].assign(target=1),
-        train_linux[train_linux["label"] == 1].assign(target=0),
+        train_linux[train_linux["label"] == 0].assign(target=0),
+        train_linux[train_linux["label"] == 1].assign(target=1),
         pd.concat([
             data_pass[(data_pass["buildId"] == 121_238) & (data_pass["testId"].isin(nft121))],
             data_pass[(data_pass["buildId"] == 123_038) & (data_pass["testId"].isin(nft123))]
@@ -43,7 +43,7 @@ def run(data_tuple, max_iter, balance_factor, scenario_name):
     ], ignore_index=True))
 
     test_df = clean(test_linux[test_linux["label"].isin([0, 1])])
-    test_df["target"] = (test_df["label"] == 0).astype(int)
+    test_df["target"] = (test_df["label"] == 1).astype(int)
 
     pos_count = (train_df["target"] == 1).sum()
     neg_count = (train_df["target"] == 0).sum()
@@ -79,17 +79,18 @@ def run(data_tuple, max_iter, balance_factor, scenario_name):
     y_true = test_df["target"].values
 
     tn, fp, fn, tp = confusion_matrix(y_true, predictions, labels=[0, 1]).ravel()
-    fpr = fp / (fp + tn) if (fp + tn) > 0 else 0.0
+
+    missed_fault_rate = fn / (fn + tp) if (fn + tp) > 0 else 0.0
 
     return {
         "Scenario": scenario_name,
         "Max_Iter": max_iter,
         "Balance_Factor": balance_factor,
-        "Precision": round(precision_score(y_true, predictions, zero_division=0), 4),
-        "Recall": round(recall_score(y_true, predictions, zero_division=0), 4),
+        "Fault_Precision": round(precision_score(y_true, predictions, zero_division=0), 4),
+        "Fault_Recall": round(recall_score(y_true, predictions, zero_division=0), 4),
         "MCC": round(matthews_corrcoef(y_true, predictions), 4),
-        "FPR": round(fpr, 4),
-        "Raw_Log": f"TN={tn}, FP={fp}, FN={fn}, TP={tp}"
+        "Missed_Fault_Rate": round(missed_fault_rate, 4),
+        "Raw_Log": f"TN_Flaky={tn}, FP_Mislabeled={fp}, FN_MissedBug={fn}, TP_BugCaught={tp}"
     }
 
 
@@ -108,7 +109,7 @@ def main():
     print("\nExecuting Baseline Replication Run...")
     base_record = run(data_tuple, max_iter=100, balance_factor=1.0, scenario_name="Clean-Room Baseline")
     records.append(base_record)
-    print(f" -> Baseline Complete: MCC={base_record['MCC']}, FPR={base_record['FPR']}")
+    print(f" -> Baseline Complete: MCC={base_record['MCC']}, Missed_Fault_Rate={base_record['Missed_Fault_Rate']}")
 
     print("\nLaunching Extension Matrix Parameter Perturbations...")
     for idx, (mit, bfac) in enumerate(itertools.product(iterations, balance_factors), 1):
