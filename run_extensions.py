@@ -26,7 +26,7 @@ LOGS_DIR = BASE_DIR / "results" / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def execute_scenario(data_tuple, max_iter, balance_factor, scenario_name):
+def run(data_tuple, max_iter, balance_factor, scenario_name):
     data_linux, data_pass, nft121, nft123 = data_tuple
     train_builds, test_builds = split(data_linux)
 
@@ -106,7 +106,7 @@ def main():
     records = []
 
     print("\nExecuting Baseline Replication Run...")
-    base_record = execute_scenario(data_tuple, max_iter=100, balance_factor=1.0, scenario_name="Clean-Room Baseline")
+    base_record = run(data_tuple, max_iter=100, balance_factor=1.0, scenario_name="Clean-Room Baseline")
     records.append(base_record)
     print(f" -> Baseline Complete: MCC={base_record['MCC']}, FPR={base_record['FPR']}")
 
@@ -116,7 +116,7 @@ def main():
             continue
         s_name = f"Extension_Variant_{idx}"
         print(f" -> Testing {s_name}: Max_Iter={mit}, Weight_Skew={bfac}...")
-        rec = execute_scenario(data_tuple, max_iter=mit, balance_factor=bfac, scenario_name=s_name)
+        rec = run(data_tuple, max_iter=mit, balance_factor=bfac, scenario_name=s_name)
         records.append(rec)
 
     summary_df = pd.DataFrame(records)

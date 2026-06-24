@@ -48,8 +48,9 @@ def load():
 
     return data_linux, data_pass, nft121, nft123
 
+TRAIN_SPLIT = 0.8
 
-def split(data, train_pct=0.8):
+def split(data, train_pct=TRAIN_SPLIT):
     unique_builds = np.sort(data["buildId"].unique())
     split_idx = int(len(unique_builds) * train_pct)
     return set(unique_builds[:split_idx]), set(unique_builds[split_idx:])
@@ -65,14 +66,14 @@ def rq3(data_linux, data_pass, nft121, nft123):
 
     train_builds, test_builds = split(data_linux)
 
-    train_linux = data_linux[data_linux["buildId"].isin(train_builds)].sample(n=150000, random_state=42)
-    test_linux = data_linux[data_linux["buildId"].isin(test_builds)].sample(n=40000, random_state=42)
+    train_linux = data_linux[data_linux["buildId"].isin(train_builds)].sample(n=150_000, random_state=42)
+    test_linux = data_linux[data_linux["buildId"].isin(test_builds)].sample(n=40_000, random_state=42)
 
     flaky_train = train_linux[train_linux["label"] == 0]
     fault_train = train_linux[train_linux["label"] == 1]
 
-    pass121 = data_pass[(data_pass["buildId"] == 121238) & (data_pass["testId"].isin(nft121))]
-    pass123 = data_pass[(data_pass["buildId"] == 123038) & (data_pass["testId"].isin(nft123))]
+    pass121 = data_pass[(data_pass["buildId"] == 121_238) & (data_pass["testId"].isin(nft121))]
+    pass123 = data_pass[(data_pass["buildId"] == 123_038) & (data_pass["testId"].isin(nft123))]
     pass_train = pd.concat([pass121, pass123])
 
     raw_train = pd.concat([
