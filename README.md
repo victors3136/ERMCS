@@ -204,14 +204,14 @@ Executing Inference across Evaluation Holdout Deck...
 RESULTS SUMMARY
 ----------------------------------------
   Pipeline_Type: Clean-Room GradientBoosting (TF-IDF)
-  Precision: 0.9902
-  Recall: 0.9872
-  MCC: 0.0143
-  FPR (Missed Faults Rate): 0.9709
-  TN: 9
-  FP: 300
-  FN: 393
-  TP: 30297
+  Fault_Precision: 0.0830
+  Fault_Recall: 0.5502
+  MCC: 0.1956
+  Missed_Fault_Rate (FPR-inverted): 0.4498
+  TN (True Flaky): 28812
+  FP (Flaky Mislabeled as Bug): 1878
+  FN (Bug Mislabeled as Flaky): 139
+  TP (True Bug caught): 170
 
 ```
 
