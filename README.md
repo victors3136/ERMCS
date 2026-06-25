@@ -132,14 +132,14 @@ project-directory/
 ├── inspect_data.py               <- run first, on real data
 ├── reproduce.py                  <- main RQ1/RQ2/RQ3 pipeline
 ├── original_paper_results.csv    <- ground-truth numbers from the paper (Tables 4 & 5)
-├── REPORT_TEMPLATE.md            <- skeleton for Task 2a/2b/2c writeup, with the
-│                                     original numbers already filled in
 ├── independent_replicate.py      <- independent replication script
 ├── run_extensions.py             <- independent replication script with modifications
+├── visualize_results.py          <- Data visualization script
 ├── data/                         <- put the 4 downloaded JSON files here
 ├── results/                      <- reproduce.py writes its CSV output here
 └── figures/                      <- confusion matrix PNGs land here
 ```
+
 ## 7. Experimental Redesign & Independent Architecture (Task 5)
 
 To satisfy clean-room validation requirements, an alternative replication
@@ -240,3 +240,62 @@ booster to prioritize minimizing False Positives (Real Bugs flagged as flaky).
 # Execute the parameter sweep across both replication and extension test scenarios
 python run_extensions.py
 ```
+
+### Example output
+```text
+================================================================================
+EXTENSION MATRIX EXPERIMENTS & ENSEMBLE PERTURBATIONS
+================================================================================
+
+Executing Baseline Replication Run...
+ -> Baseline Complete: MCC=0.1487, Missed_Fault_Rate=0.5152
+
+Launching Extension Matrix Parameter Perturbations...
+ -> Testing Extension_Variant_1: Max_Iter=50, Weight_Skew=1.0...
+ -> Testing Extension_Variant_2: Max_Iter=50, Weight_Skew=1.5...
+ -> Testing Extension_Variant_3: Max_Iter=50, Weight_Skew=2.0...
+ -> Testing Extension_Variant_5: Max_Iter=100, Weight_Skew=1.5...
+ -> Testing Extension_Variant_6: Max_Iter=100, Weight_Skew=2.0...
+ -> Testing Extension_Variant_7: Max_Iter=200, Weight_Skew=1.0...
+ -> Testing Extension_Variant_8: Max_Iter=200, Weight_Skew=1.5...
+ -> Testing Extension_Variant_9: Max_Iter=200, Weight_Skew=2.0...
+
+----------------------------------------
+EXTENSION MATRIX PROCESS RUNS COMPLETE
+----------------------------------------
+           Scenario  Max_Iter  Balance_Factor  Fault_Precision  Fault_Recall    MCC  Missed_Fault_Rate                                                                Raw_Log
+Clean-Room Baseline       100             1.0           0.0597        0.4848 0.1487             0.5152 TN_Flaky=21271, FP_Mislabeled=1763, FN_MissedBug=119, TP_BugCaught=112
+Extension_Variant_1        50             1.0           0.0597        0.4848 0.1487             0.5152 TN_Flaky=21271, FP_Mislabeled=1763, FN_MissedBug=119, TP_BugCaught=112
+Extension_Variant_2        50             1.5           0.0538        0.6667 0.1657             0.3333  TN_Flaky=20325, FP_Mislabeled=2709, FN_MissedBug=77, TP_BugCaught=154
+Extension_Variant_3        50             2.0           0.0469        0.6407 0.1477             0.3593  TN_Flaky=20025, FP_Mislabeled=3009, FN_MissedBug=83, TP_BugCaught=148
+Extension_Variant_5       100             1.5           0.0538        0.6667 0.1657             0.3333  TN_Flaky=20325, FP_Mislabeled=2709, FN_MissedBug=77, TP_BugCaught=154
+Extension_Variant_6       100             2.0           0.0469        0.6407 0.1477             0.3593  TN_Flaky=20025, FP_Mislabeled=3009, FN_MissedBug=83, TP_BugCaught=148
+Extension_Variant_7       200             1.0           0.0597        0.4848 0.1487             0.5152 TN_Flaky=21271, FP_Mislabeled=1763, FN_MissedBug=119, TP_BugCaught=112
+Extension_Variant_8       200             1.5           0.0538        0.6667 0.1657             0.3333  TN_Flaky=20325, FP_Mislabeled=2709, FN_MissedBug=77, TP_BugCaught=154
+Extension_Variant_9       200             2.0           0.0469        0.6407 0.1477             0.3593  TN_Flaky=20025, FP_Mislabeled=3009, FN_MissedBug=83, TP_BugCaught=148
+```
+
+## 10. Data Visualization Assets (Task 8)
+
+### Visualization Execution Instructions
+
+```bash
+# Generate the parameter tradeoffs and comparative confusion matrix plots
+python visualize_results.py
+```
+
+## Generated Visual Assets
+- Algorithmic Sensitivity Tradeoff Chart (figures/extension_optimization_tradeoff.png):
+
+This plot graphs the algorithmic compensation sweet spot discovered.
+It visualizes how shifting minority class cost weights isolates real bugs while
+balancing precision degradation. It explicitly maps out the optimization point where
+Matthews Correlation is maximized (MCC = 0.1657) and Missed Faults drop down to 33.33%.
+
+- Structural Confusion Matrix Comparison (figures/confusion_matrix_comparison.png):
+
+A side-by-side verification plot illustrating the paradigm shift between label targets:
+- Left Frame (Trial Run 1): Illustrates the fatal majority-class over-fit, where a
+flaky-centric label setup leads to high accuracy but creates massive blind spots for bugs.
+- Right Frame (Clean-Room Run): Illustrates the bug-centric configuration, mapping out
+true regressions caught vs. flaky false alerts in continuous integration downsampled environments

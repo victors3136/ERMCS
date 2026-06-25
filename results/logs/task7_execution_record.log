@@ -1,0 +1,11 @@
+=== TASK 7 RAW LOG EXECUTION RECORD ===
+           Scenario  Max_Iter  Balance_Factor  Fault_Precision  Fault_Recall    MCC  Missed_Fault_Rate                                                                Raw_Log
+Clean-Room Baseline       100             1.0           0.0597        0.4848 0.1487             0.5152 TN_Flaky=21271, FP_Mislabeled=1763, FN_MissedBug=119, TP_BugCaught=112
+Extension_Variant_1        50             1.0           0.0597        0.4848 0.1487             0.5152 TN_Flaky=21271, FP_Mislabeled=1763, FN_MissedBug=119, TP_BugCaught=112
+Extension_Variant_2        50             1.5           0.0538        0.6667 0.1657             0.3333  TN_Flaky=20325, FP_Mislabeled=2709, FN_MissedBug=77, TP_BugCaught=154
+Extension_Variant_3        50             2.0           0.0469        0.6407 0.1477             0.3593  TN_Flaky=20025, FP_Mislabeled=3009, FN_MissedBug=83, TP_BugCaught=148
+Extension_Variant_5       100             1.5           0.0538        0.6667 0.1657             0.3333  TN_Flaky=20325, FP_Mislabeled=2709, FN_MissedBug=77, TP_BugCaught=154
+Extension_Variant_6       100             2.0           0.0469        0.6407 0.1477             0.3593  TN_Flaky=20025, FP_Mislabeled=3009, FN_MissedBug=83, TP_BugCaught=148
+Extension_Variant_7       200             1.0           0.0597        0.4848 0.1487             0.5152 TN_Flaky=21271, FP_Mislabeled=1763, FN_MissedBug=119, TP_BugCaught=112
+Extension_Variant_8       200             1.5           0.0538        0.6667 0.1657             0.3333  TN_Flaky=20325, FP_Mislabeled=2709, FN_MissedBug=77, TP_BugCaught=154
+Extension_Variant_9       200             2.0           0.0469        0.6407 0.1477             0.3593  TN_Flaky=20025, FP_Mislabeled=3009, FN_MissedBug=83, TP_BugCaught=148
